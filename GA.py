@@ -113,7 +113,7 @@ def main():
     n = 11  # only odd numbers
     c = 50
     num_pop = 50  # only even
-    simulation = 3
+    simulation = 10000
     population = Population(num_pop, c, n)
     population.create_population()
     best_chromosome = population.best_chromosome()
