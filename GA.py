@@ -4,13 +4,25 @@ from tqdm.auto import tqdm
 
 
 class Population:
+
     def __init__(self, num_pop, c, n, chromosomes=[]):
+        """
+        :param: num_pop: number of population
+                c: max value of one gene in chromosome
+                n: size of square numpy nparray matrix
+                chromosomes: list of chromosomes
+        """
         self.chromosomes = chromosomes
         self.num_pop = num_pop
         self.c = c
         self.n = n
 
     def count_adaptation(self, chromosome):
+        """
+        Count adaptation of each chromosome
+        :param chromosome: numpay nxn array
+        :return: float value of adaptation
+        """
         counter = 0
         translation = int(chromosome.shape[0] / 2)
         for i in range(self.n):
@@ -21,11 +33,18 @@ class Population:
         return 1/counter
 
     def create_population(self):
+        """
+        Create population of chromosomes and assign adaptation each of them
+        """
         for i in range(self.num_pop):
             self.chromosomes.append(Chromosome(np.random.randint(1, self.c, size=(self.n, self.n))))
             self.chromosomes[i].set_adaptation(self.count_adaptation(self.chromosomes[i].body))
 
     def count_probabilities(self):
+        """
+        Count probability of choose each chromosome in crossing
+        :return: list of probabilities in order of each chromosome
+        """
         sum_adp = 0
         for chromosome in self.chromosomes:
             sum_adp += chromosome.adaptation
@@ -39,10 +58,17 @@ class Population:
         return normalised
 
     def choose_parents(self):
+        """
+        :return: list of references to chromosomes that have been chosen to cross
+        """
         choice = np.random.choice(self.chromosomes, self.num_pop, p=self.count_probabilities())
         return choice
 
     def crossing(self, parents):
+        """
+        Chromosomes corssover. Choose one random quarter and transplant it between two chromosomes
+        :param parents: list of chromosomes, which were chose to cross before
+        """
         offspring = []
         available_parents = list(range(self.num_pop))
         for i in range(self.num_pop):
@@ -77,14 +103,21 @@ class Population:
             self.chromosomes[i].set_body(offspring[i].copy())
 
     def mutation(self):
+        """
+        Mutation of each gene contained in chromosome with 2% chance
+        """
         for chromosome in self.chromosomes:
             for i in range(self.n):
                 for j in range(self.n):
-                    if random.uniform(0, 100) < 0.01:
+                    if random.uniform(0, 100) < 0.2:
                         chromosome.body[i][j] = np.random.randint(1, self.c)
             chromosome.set_adaptation(self.count_adaptation(chromosome.body))
 
     def best_chromosome(self):
+        """
+        Chose one of the best chromosome, based on adaptation
+        :return: reference to the best chromosome
+        """
         adaptations = []
         for chromosome in self.chromosomes:
             adaptations.append(chromosome.adaptation)
@@ -113,7 +146,7 @@ def main():
     n = 11  # only odd numbers
     c = 50
     num_pop = 50  # only even
-    simulation = 10000
+    simulation = 1000
     population = Population(num_pop, c, n)
     population.create_population()
     best_chromosome = population.best_chromosome()
@@ -129,7 +162,7 @@ def main():
     best_chromosome = population.best_chromosome()
     print(best_chromosome)
     final_adaptation = best_chromosome.adaptation
-    print("adaptacja zwiekszona o " + str(int(((final_adaptation - start_adaptation)/start_adaptation) * 100)) + "%")
+    print("increase of adaptation: " + str(int(((final_adaptation - start_adaptation)/start_adaptation) * 100)) + "%")
 
 
 if __name__ == "__main__":
