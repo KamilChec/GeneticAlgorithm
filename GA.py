@@ -146,14 +146,11 @@ def main():
     n = 11  # only odd numbers
     c = 50
     num_pop = 50  # only even
-    simulation = 1000
+    simulation = 10000
     population = Population(num_pop, c, n)
     population.create_population()
     best_chromosome = population.best_chromosome()
     start_adaptation = best_chromosome.adaptation
-    parents = population.choose_parents()
-    population.crossing(parents)
-    population.mutation()
     for i in tqdm(range(simulation)):
         # print("", end='\r')
         parents = population.choose_parents()
@@ -162,7 +159,7 @@ def main():
     best_chromosome = population.best_chromosome()
     print(best_chromosome)
     final_adaptation = best_chromosome.adaptation
-    print("increase of adaptation: " + str(int(((final_adaptation - start_adaptation)/start_adaptation) * 100)) + "%")
+    print("increase of adaptation: {}%".format(int(((final_adaptation - start_adaptation)/start_adaptation) * 100)))
 
 
 if __name__ == "__main__":
