@@ -104,7 +104,7 @@ def objective_function(keff_list):
             # score += (const/len(keff))/(1.07 - 1.) * (val - 1.)
     if max(keff) > 1:
         for i in range(len(keff)):
-            if keff[i] < 1 < keff[i - 1]:
+            if keff[i] < 1 <= keff[i - 1]:
                 score += day[i - 1]
                 # print(day[i - 1])            #przyjrzec sie
                 break
