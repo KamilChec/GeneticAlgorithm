@@ -164,7 +164,13 @@ class Population:
         enrichment = {
             1: 1.6, 2: 2.4, 3: 2.4, 4: 2.4, 5: 3.1, 6: 3.1, 7: 3.1, 8: 3.1, 9: 3.1
         }
-
+        sum = 0
+        for chromosome in self.chromosomes:
+            for i in range(self.n):
+                for j in range(self.n):
+                    if chromosome.body[i][j] in enrichment:
+                       sum += enrichment.get(chromosome.body[i][j])
+        return sum
 
 
 class Chromosome(Population):

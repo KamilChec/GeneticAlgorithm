@@ -191,6 +191,43 @@ def plot_keff(numb):
     plt.show()
 
 
+def uranium_of_pattern():
+    file_path = "res/base"
+    text = []
+    with open(file_path) as input_data:   #pomysl zeby wczytac raz na poczatku
+        for line in input_data:
+            if line.strip() == 'rad_conf':
+                break
+        for line in input_data:
+            if line.strip() == '!':
+                break
+            text.append([int(x) for x in line.split()])
+    pattern = np.asarray(text)
+    enrichment = {
+        1: 1.6, 2: 2.4, 3: 2.4, 4: 2.4, 5: 3.1, 6: 3.1, 7: 3.1, 8: 3.1, 9: 3.1
+    }
+    sum = 0
+    for i in range(np.shape(pattern)[0]):
+        for j in range(np.shape(pattern)[1]):
+            if pattern[i][j] in enrichment:
+                sum += enrichment.get(pattern[i][j])
+    return sum
+
+
+def objective_function_uranium(total_enrichment, keff_list):
+    keff = keff_list[0]
+    day = keff_list[1]
+    score = 0
+    pattern = uranium_of_pattern()
+    penalty = 0
+    if total_enrichment > pattern:
+        penalty = total_enrichment/pattern * 100
+    for i in range(len(keff)):
+        if keff[i] < 1 <= keff[i - 1]:
+            score += day[i - 1]
+            break
+    return score - penalty
+
 # array = best_geom()
 # mod_file_path(1)  # zmiana 25.12, usunac
 # write_array(array)
